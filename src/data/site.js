@@ -3,6 +3,8 @@ export const site = {
   role: "AI Engineer",
   tagline: "Production-grade AI agents for teams that need them to actually work.",
   location: "Delhi NCR, India (IST)",
+  // Shown next to the headshot. Set to null to hide when fully booked.
+  availability: "Taking on new projects",
   links: {
     linkedin: "https://www.linkedin.com/in/mridul-gulati",
     github: "https://github.com/Mridul-Gulati",

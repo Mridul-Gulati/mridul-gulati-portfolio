@@ -2,6 +2,7 @@ import { requirementTypes, site } from "@/data/site";
 import { getPublishedAgentBySlug } from "@/lib/agents";
 import { Container, PageHeader } from "@/components/ui";
 import { LinkedInIcon } from "@/components/icons";
+import { Avatar } from "@/components/Headshot";
 import ContactForm from "./ContactForm";
 
 export const metadata = {
@@ -41,6 +42,15 @@ export default async function ContactPage({ searchParams }) {
         <ContactForm defaultType={defaultType} defaultMessage={defaultMessage} />
 
         <aside className="space-y-8">
+          <div className="flex items-start gap-4 rounded-2xl border border-dark/10 bg-white p-5 dark:border-light/10 dark:bg-white/5">
+            <Avatar size={56} />
+            <div>
+              <h2 className="font-bold">You&apos;ll be talking to me directly.</h2>
+              <p className="mt-1 text-sm text-dark/70 dark:text-light/70">
+                No agency and no account managers. I read every enquiry and reply myself.
+              </p>
+            </div>
+          </div>
           <div>
             <h2 className="mb-4 text-lg font-bold">What happens next</h2>
             <ol className="space-y-3">

@@ -25,7 +25,7 @@ export const resume = {
         "Implemented pre-production agent evaluation and simulation using custom quality metrics and simulated user personas.",
         "Added per-agent token cost observability, optimising expensive turns and reporting through BigQuery.",
         "Designed a multi-agent candidate screening system: CV and JD parsing, match scoring, question generation and a first-round AI interview agent on Google Meet.",
-        "Deployed 10+ enterprise-grade agentic solutions with guardrails and observability in place before release.",
+        "Built and deployed 50+ enterprise-grade agents to production, with guardrails and observability in place before release.",
         "Worked with presales to turn new agent capabilities into client-facing solutions; interviewed mid-to-senior GenAI engineering candidates.",
       ],
       award: "Trailblazer Award, Q2 2026: highest quarterly recognition from the CTO and Ecosystems team, across 500+ employees.",
@@ -76,7 +76,7 @@ export const resume = {
 // Headline numbers used on the home and about pages.
 export const highlights = [
   { value: "30,000+", label: "agent runs per day at production scale" },
-  { value: "10+", label: "enterprise agentic systems deployed" },
+  { value: "50+", label: "enterprise-grade agents built and deployed" },
   { value: "55%", label: "faster data gathering via tool caching" },
   { value: "98%", label: "satisfaction across 1,000 human reviewers" },
 ];

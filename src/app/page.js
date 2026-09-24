@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { highlights } from "@/data/resume";
+import { site } from "@/data/site";
 import { getPublishedAgents } from "@/lib/agents";
 import { ButtonLink, Card, Container, Eyebrow, SectionHeader } from "@/components/ui";
 import { ArrowRightIcon } from "@/components/icons";
 import AgentCard from "@/components/catalogue/AgentCard";
+import { Availability, Avatar, Portrait } from "@/components/Headshot";
 import Testimonials from "@/components/Testimonials";
 
 // Featured agents come from the catalogue; refresh the cached page at most every 5 minutes.
@@ -30,25 +32,38 @@ export default async function Home() {
   return (
     <>
       <section>
-        <Container className="pb-20 pt-16 sm:pb-28 sm:pt-28">
-          <div className="max-w-4xl space-y-6">
-            <Eyebrow>AI engineer · Agentic systems</Eyebrow>
-            <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-              I build AI agents that run in production, not just in demos.
-            </h1>
-            <p className="max-w-2xl text-lg text-dark/70 sm:text-xl dark:text-light/70">
-              Multi-agent systems with evaluation, guardrails and observability built in, from first
-              prototype to thousands of runs a day. Based in India, with working hours that overlap
-              Europe, the UK and Australia.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <ButtonLink href="/contact">
-                Start a project <ArrowRightIcon />
-              </ButtonLink>
-              <ButtonLink href="/projects" variant="secondary">
-                Browse agents
-              </ButtonLink>
+        <Container className="pb-20 pt-12 sm:pb-28 sm:pt-20 lg:pt-24">
+          <div className="grid items-center gap-12 lg:grid-cols-[1fr_22rem] xl:grid-cols-[1fr_24rem] xl:gap-20">
+            <div className="space-y-6">
+              {/* Phones and tablets: a compact avatar keeps the headline above the fold. */}
+              <div className="flex items-center gap-4 lg:hidden">
+                <Avatar size={64} />
+                <div>
+                  <p className="font-bold">{site.name}</p>
+                  <Availability />
+                </div>
+              </div>
+              <Eyebrow>AI engineer · Agentic systems</Eyebrow>
+              <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-6xl lg:text-5xl xl:text-6xl">
+                I build AI agents that run in production, not just in demos.
+              </h1>
+              <p className="max-w-2xl text-lg text-dark/70 sm:text-xl dark:text-light/70">
+                Multi-agent systems with evaluation, guardrails and observability built in, from first
+                prototype to thousands of runs a day. Based in India, with working hours that overlap
+                Europe, the UK and Australia.
+              </p>
+              <div className="flex flex-wrap gap-4 pt-2">
+                <ButtonLink href="/contact">
+                  Start a project <ArrowRightIcon />
+                </ButtonLink>
+                <ButtonLink href="/projects" variant="secondary">
+                  Browse agents
+                </ButtonLink>
+              </div>
             </div>
+
+            {/* Desktop: full portrait beside the headline. */}
+            <Portrait priority withNameCard sizes="24rem" className="mx-auto hidden w-full max-w-sm lg:block" />
           </div>
 
           <dl className="mt-16 grid grid-cols-2 gap-6 border-t border-dark/10 pt-10 lg:grid-cols-4 dark:border-light/10">

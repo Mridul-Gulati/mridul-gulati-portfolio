@@ -1,5 +1,6 @@
 import { highlights, resume } from "@/data/resume";
 import { ButtonLink, Card, Container, PageHeader, SectionHeader, Tag } from "@/components/ui";
+import { Portrait } from "@/components/Headshot";
 
 export const metadata = {
   title: "About",
@@ -30,7 +31,10 @@ export default function AboutPage() {
         for enterprise workflows: incident response, hiring, internal assistants and quality review.
       </PageHeader>
 
-      <div className="grid gap-12 lg:grid-cols-[2fr_1fr]">
+      <div className="grid gap-12 lg:grid-cols-[1fr_20rem] xl:gap-20">
+        {/* On phones the portrait sits between the intro and the story. */}
+        <Portrait sizes="(min-width: 1024px) 20rem, 20rem" className="w-full max-w-xs lg:order-last lg:max-w-none" />
+
         <div className="space-y-5 text-lg leading-relaxed text-dark/80 dark:text-light/80">
           <p>
             I started out building an agent that reviewed LLM training data, scoring notebooks for
@@ -41,7 +45,7 @@ export default function AboutPage() {
           </p>
           <p>
             Today I lead agentic AI delivery for enterprise clients: root-cause analysis agents for SRE
-            teams, multi-agent candidate screening, and more than ten production deployments with
+            teams, multi-agent candidate screening, and more than 50 enterprise-grade agents in production, with
             guardrails, evaluation and cost observability in place before release. In 2026 that work
             earned a quarterly award for impact, chosen from over 500 colleagues.
           </p>
@@ -51,17 +55,17 @@ export default function AboutPage() {
             about it.
           </p>
         </div>
-
-        <dl className="grid h-fit grid-cols-2 gap-6 lg:grid-cols-1">
-          {highlights.map(({ value, label }) => (
-            <div key={label}>
-              <dt className="sr-only">{label}</dt>
-              <dd className="text-3xl font-bold text-primary dark:text-primary-dark">{value}</dd>
-              <dd className="text-sm text-dark/70 dark:text-light/70">{label}</dd>
-            </div>
-          ))}
-        </dl>
       </div>
+
+      <dl className="mt-16 grid grid-cols-2 gap-6 border-t border-dark/10 pt-10 lg:grid-cols-4 dark:border-light/10">
+        {highlights.map(({ value, label }) => (
+          <div key={label}>
+            <dt className="sr-only">{label}</dt>
+            <dd className="text-3xl font-bold text-primary dark:text-primary-dark">{value}</dd>
+            <dd className="mt-1 text-sm text-dark/70 dark:text-light/70">{label}</dd>
+          </div>
+        ))}
+      </dl>
 
       <section className="pt-24">
         <SectionHeader eyebrow="How I work" title="Principles" />

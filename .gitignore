@@ -40,3 +40,8 @@ yarn-error.log*
 
 # guard against a mistyped env file name
 /env.local
+
+# raw photo exports (optimised copies live in src/assets)
+/*.PNG
+/*.png
+/*.HEIC
