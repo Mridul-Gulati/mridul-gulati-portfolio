@@ -1,30 +1,13 @@
 import Link from "next/link";
 import { highlights } from "@/data/resume";
-import { ButtonLink, Card, Container, Eyebrow, SectionHeader, Tag } from "@/components/ui";
+import { getPublishedAgents } from "@/lib/agents";
+import { ButtonLink, Card, Container, Eyebrow, SectionHeader } from "@/components/ui";
 import { ArrowRightIcon } from "@/components/icons";
+import AgentCard from "@/components/catalogue/AgentCard";
 import Testimonials from "@/components/Testimonials";
 
-// Placeholder cards until the catalogue reads real agents from Supabase (Phase 3).
-const upcomingAgents = [
-  {
-    name: "SRE Assistant",
-    persona: "site reliability engineers",
-    problem: "Correlates incidents with metrics and logs, finds the likely root cause and drafts a remediation plan.",
-    tags: ["Multi-agent", "Incident response"],
-  },
-  {
-    name: "Candidate Screening Assistant",
-    persona: "recruiters and hiring managers",
-    problem: "Parses CVs against a job description, scores the match and generates tailored interview questions.",
-    tags: ["Document parsing", "Scoring"],
-  },
-  {
-    name: "Employee Onboarding Assistant",
-    persona: "HR and new joiners",
-    problem: "Guides new hires through their first weeks, answers policy questions and tracks onboarding tasks.",
-    tags: ["RAG", "Workflow"],
-  },
-];
+// Featured agents come from the catalogue; refresh the cached page at most every 5 minutes.
+export const revalidate = 300;
 
 const capabilities = [
   {
@@ -41,7 +24,9 @@ const capabilities = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const featured = await getPublishedAgents({ limit: 3 });
+
   return (
     <>
       <section>
@@ -78,36 +63,33 @@ export default function Home() {
         </Container>
       </section>
 
-      <section className="py-16">
-        <Container>
-          <SectionHeader eyebrow="Agent catalogue" title="See the agents at work">
-            Short, captioned demos of agents built for real enterprise workflows. New ones are added
-            regularly.
-          </SectionHeader>
-          <div className="grid gap-6 md:grid-cols-3">
-            {upcomingAgents.map((agent) => (
-              <Card key={agent.name} className="flex flex-col gap-4">
-                <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-xl font-bold">{agent.name}</h3>
-                  <span className="shrink-0 rounded-full border border-dark/20 px-2.5 py-0.5 text-xs font-semibold dark:border-light/20">
-                    Demo soon
-                  </span>
-                </div>
-                <p className="text-sm font-medium text-primary dark:text-primary-dark">For {agent.persona}</p>
-                <p className="flex-1 text-dark/70 dark:text-light/70">{agent.problem}</p>
-                <div className="flex flex-wrap gap-2">
-                  {agent.tags.map((tag) => (
-                    <Tag key={tag}>{tag}</Tag>
-                  ))}
-                </div>
-              </Card>
-            ))}
-          </div>
-          <Link href="/projects" className="mt-8 inline-flex items-center gap-2 font-semibold hover:underline">
-            View the full catalogue <ArrowRightIcon />
-          </Link>
-        </Container>
-      </section>
+      {featured.length > 0 && (
+        <section className="py-16">
+          <Container>
+            <SectionHeader eyebrow="Agent catalogue" title="See the agents at work">
+              Short, captioned demos of agents built for real enterprise workflows. New ones are added
+              regularly.
+            </SectionHeader>
+            <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {featured.map((agent) => (
+                <li key={agent.slug}>
+                  <AgentCard agent={agent}>
+                    <Link
+                      href={`/projects?agent=${agent.slug}`}
+                      className="inline-flex items-center gap-2 font-semibold hover:underline"
+                    >
+                      {agent.youtube_id ? "Watch demo" : "Preview"} <ArrowRightIcon />
+                    </Link>
+                  </AgentCard>
+                </li>
+              ))}
+            </ul>
+            <Link href="/projects" className="mt-8 inline-flex items-center gap-2 font-semibold hover:underline">
+              View the full catalogue <ArrowRightIcon />
+            </Link>
+          </Container>
+        </section>
+      )}
 
       <section className="py-16">
         <Container>

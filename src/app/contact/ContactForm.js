@@ -25,7 +25,7 @@ function Field({ label, name, error, optional, children }) {
   );
 }
 
-export default function ContactForm({ defaultType }) {
+export default function ContactForm({ defaultType, defaultMessage }) {
   const [state, formAction, pending] = useActionState(submitContact, null);
 
   if (state?.status === "success") {
@@ -93,6 +93,7 @@ export default function ContactForm({ defaultType }) {
       <Field label="Tell me about the project" name="message" error={errors.message}>
         <textarea
           {...fieldProps("message")}
+          defaultValue={values.message ?? defaultMessage}
           rows={6}
           required
           minLength={20}

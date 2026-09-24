@@ -49,6 +49,17 @@ the service role, then emails `OWNER_EMAIL` via Resend. The table has RLS on wit
 policies. Until a domain is verified in Resend, mail is sent from `onboarding@resend.dev` and can
 only be delivered to the address the Resend account was created with.
 
+## Agent catalogue
+
+Agents live in the `agents` table. Until the admin console exists, edit them in Supabase's Table
+Editor: set `youtube_id` (the 11-character id of an unlisted video) once a demo is recorded, and
+`published = true` to show the agent. `/projects` refreshes within a minute, the home page within
+five. Badges ("Newly added", "Most liked") and `hearts_count` are derived automatically.
+
+Hearts are one per visitor per agent: the server issues a random httpOnly `vid` cookie and stores
+only its salted hash, with a per-IP hourly cap. Opening a demo counts one view per session.
+`/projects?agent=<slug>` opens that agent's demo directly.
+
 ## Project layout
 
 ```

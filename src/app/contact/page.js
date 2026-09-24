@@ -1,4 +1,5 @@
 import { requirementTypes, site } from "@/data/site";
+import { getPublishedAgentBySlug } from "@/lib/agents";
 import { Container, PageHeader } from "@/components/ui";
 import { LinkedInIcon } from "@/components/icons";
 import ContactForm from "./ContactForm";
@@ -14,10 +15,20 @@ const expectations = [
   "A clear written proposal covering approach, timeline and cost.",
 ];
 
-// /contact?type=<requirement type> pre-selects the dropdown (used by catalogue CTAs in Phase 3).
+// Pre-fill from the URL:
+// - /contact?type=<requirement type> pre-selects the dropdown
+// - /contact?agent=<slug> (the catalogue's "Contact me") pre-selects a custom build and
+//   starts the message with the agent the visitor was looking at
 export default async function ContactPage({ searchParams }) {
-  const { type } = await searchParams;
-  const defaultType = requirementTypes.includes(type) ? type : undefined;
+  const { type, agent: agentSlug } = await searchParams;
+  const agent = await getPublishedAgentBySlug(agentSlug);
+
+  const defaultType = requirementTypes.includes(type)
+    ? type
+    : agent
+      ? "Custom AI agent build"
+      : undefined;
+  const defaultMessage = agent ? `I saw the ${agent.name} demo and I'm interested in something similar. ` : undefined;
 
   return (
     <Container>
@@ -27,7 +38,7 @@ export default async function ContactPage({ searchParams }) {
       </PageHeader>
 
       <div className="grid gap-12 lg:grid-cols-[2fr_1fr]">
-        <ContactForm defaultType={defaultType} />
+        <ContactForm defaultType={defaultType} defaultMessage={defaultMessage} />
 
         <aside className="space-y-8">
           <div>

@@ -1,7 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getVisitorHash } from "@/lib/visitor";
+import { getIpHash } from "@/lib/visitor";
 import { requirementTypes } from "@/data/site";
 
 const RATE_LIMIT = { max: 3, windowMinutes: 60 };
@@ -71,7 +71,7 @@ export async function submitContact(_prevState, formData) {
   if (Object.keys(errors).length) return { status: "error", errors, values };
 
   const supabase = createAdminClient();
-  const ipHash = await getVisitorHash();
+  const ipHash = await getIpHash();
 
   const since = new Date(Date.now() - RATE_LIMIT.windowMinutes * 60_000).toISOString();
   const { count, error: countError } = await supabase
