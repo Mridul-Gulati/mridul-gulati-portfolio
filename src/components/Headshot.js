@@ -6,8 +6,11 @@ import avatar from "@/assets/headshot-avatar.jpg";
 const alt = `${site.name}, ${site.role}`;
 
 // No shadow at rest; a soft brand-colour glow on hover (pink in light mode, teal in dark).
+// The avatar gets a tighter glow: a wide blur spreads too thin around a small circle.
 const glow =
   "transition-shadow duration-500 ease-out hover:shadow-[0_0_48px_-6px_var(--color-primary)] dark:hover:shadow-[0_0_48px_-6px_var(--color-primary-dark)]";
+const avatarGlow =
+  "transition-shadow duration-500 ease-out hover:shadow-[0_0_18px_2px_var(--color-primary)] dark:hover:shadow-[0_0_18px_2px_var(--color-primary-dark)]";
 
 // Small "open to work" line. Driven by site.availability so it can be switched off in one place.
 export function Availability({ className = "" }) {
@@ -43,7 +46,7 @@ export function Avatar({ size = 56, className = "" }) {
       width={size}
       height={size}
       placeholder="blur"
-      className={`shrink-0 rounded-full ring-2 ring-white dark:ring-dark ${glow} ${className}`}
+      className={`shrink-0 rounded-full ring-2 ring-white dark:ring-dark ${avatarGlow} ${className}`}
       style={{ width: size, height: size }}
     />
   );
