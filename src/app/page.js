@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { highlights } from "@/data/resume";
-import { site } from "@/data/site";
 import { getPublishedAgents } from "@/lib/agents";
 import { ButtonLink, Card, Container, Eyebrow, SectionHeader } from "@/components/ui";
 import { ArrowRightIcon } from "@/components/icons";
 import AgentCard from "@/components/catalogue/AgentCard";
-import { Availability, Avatar, Portrait } from "@/components/Headshot";
+import { Availability } from "@/components/Headshot";
+import GeometricField from "@/components/GeometricField";
 import Testimonials from "@/components/Testimonials";
 
 // Featured agents come from the catalogue; refresh the cached page at most every 5 minutes.
@@ -33,16 +33,9 @@ export default async function Home() {
     <>
       <section>
         <Container className="pb-20 pt-12 sm:pb-28 sm:pt-20 lg:pt-24">
-          <div className="grid items-center gap-12 lg:grid-cols-[1fr_22rem] xl:grid-cols-[1fr_24rem] xl:gap-20">
+          <div className="grid items-center gap-12 lg:grid-cols-[1fr_26rem] xl:grid-cols-[1fr_30rem] xl:gap-16">
             <div className="space-y-6">
-              {/* Phones and tablets: a compact avatar keeps the headline above the fold. */}
-              <div className="flex items-center gap-4 lg:hidden">
-                <Avatar size={64} />
-                <div>
-                  <p className="font-bold">{site.name}</p>
-                  <Availability />
-                </div>
-              </div>
+              <Availability />
               <Eyebrow>AI engineer · Agentic systems</Eyebrow>
               <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-6xl lg:text-5xl xl:text-6xl">
                 I build AI agents that run in production, not just in demos.
@@ -62,8 +55,10 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Desktop: full portrait beside the headline. */}
-            <Portrait priority withNameCard sizes="24rem" className="mx-auto hidden w-full max-w-sm lg:block" />
+            {/* Desktop: slowly rotating wireframe solids beside the headline. */}
+            <div className="hidden aspect-square w-full lg:block">
+              <GeometricField />
+            </div>
           </div>
 
           <dl className="mt-16 grid grid-cols-2 gap-6 border-t border-dark/10 pt-10 lg:grid-cols-4 dark:border-light/10">
