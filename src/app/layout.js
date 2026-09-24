@@ -1,4 +1,7 @@
 import { Montserrat } from "next/font/google";
+import ThemeProvider from "@/components/ThemeProvider";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -20,9 +23,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${montserrat.variable} font-sans min-h-screen`}>
-        {children}
+    // suppressHydrationWarning: next-themes sets the theme class on <html> before hydration.
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${montserrat.variable} flex min-h-screen flex-col font-sans antialiased`}>
+        <ThemeProvider>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </ThemeProvider>
       </body>
     </html>
   );

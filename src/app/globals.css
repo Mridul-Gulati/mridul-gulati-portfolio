@@ -1,9 +1,16 @@
 @import "tailwindcss";
 
-/* Dark mode is class-based so a theme toggle can control it (Phase 2). */
-@custom-variant dark (&:where(.dark, .dark *));
+/* Dark mode is class-based (next-themes toggles .dark on <html>). Screen-only, so printing
+   and the generated resume PDF always use the light palette. */
+@custom-variant dark {
+  @media screen {
+    &:where(.dark, .dark *) {
+      @slot;
+    }
+  }
+}
 
-/* Color tokens carried over from the CodeBucks starter. Final design tokens are locked in Phase 2. */
+/* Design tokens. Colors come from the CodeBucks starter palette. */
 @theme {
   --color-dark: #1b1b1b;
   --color-light: #f5f5f5;
@@ -15,4 +22,15 @@
 
 body {
   @apply bg-light text-dark dark:bg-dark dark:text-light;
+}
+
+@page {
+  size: A4;
+  margin: 14mm 16mm;
+}
+
+@media print {
+  body {
+    background: white;
+  }
 }

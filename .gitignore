@@ -37,3 +37,6 @@ yarn-error.log*
 # private planning docs
 /context.md
 /IMPLEMENTATION_CHECKLIST.md
+
+# guard against a mistyped env file name
+/env.local

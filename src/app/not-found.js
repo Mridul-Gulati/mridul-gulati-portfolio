@@ -1,17 +1,19 @@
-import Link from "next/link";
+import { ButtonLink, Container, PageHeader } from "@/components/ui";
 
 export const metadata = { title: "Page not found" };
 
 export default function NotFound() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col items-start justify-center gap-4 px-6">
-      <p className="text-sm font-semibold uppercase tracking-widest text-primary dark:text-primary-dark">
-        404
-      </p>
-      <h1 className="text-4xl font-bold">This page does not exist.</h1>
-      <Link href="/" className="underline underline-offset-4">
-        Back to home
-      </Link>
-    </main>
+    <Container>
+      <PageHeader eyebrow="404" title="This page does not exist.">
+        The link may be broken, or the page may have moved.
+      </PageHeader>
+      <div className="flex flex-wrap gap-4">
+        <ButtonLink href="/">Back to home</ButtonLink>
+        <ButtonLink href="/projects" variant="secondary">
+          Browse agents
+        </ButtonLink>
+      </div>
+    </Container>
   );
 }
