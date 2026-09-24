@@ -30,3 +30,10 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# private source files (resume with phone number) - the public PDF goes in /public once scrubbed
+/Mridul_Gulati_Resume.*
+
+# private planning docs
+/context.md
+/IMPLEMENTATION_CHECKLIST.md

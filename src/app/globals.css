@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Dark mode is class-based so a theme toggle can control it (Phase 2). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Color tokens carried over from the CodeBucks starter. Final design tokens are locked in Phase 2. */
+@theme {
+  --color-dark: #1b1b1b;
+  --color-light: #f5f5f5;
+  --color-primary: #b63e96;
+  --color-primary-dark: #58e6d9;
+
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-light text-dark dark:bg-dark dark:text-light;
+}

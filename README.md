@@ -1,47 +1,49 @@
-# Next.Js Website Tutorial: Create a Stunning Portfolio Website with Nextjs, Tailwind CSS and Framer-motion🌟
+# Mridul Gulati: Portfolio and Agent Catalogue
 
-![GitHub stars](https://img.shields.io/github/stars/codebucks27/Next.js-Developer-Portfolio-Starter-Code?style=social&logo=ApacheSpark&label=Stars)&nbsp;&nbsp;
-![GitHub forks](https://img.shields.io/github/forks/codebucks27/Next.js-Developer-Portfolio-Starter-Code?style=social&logo=KashFlow&maxAge=3600)&nbsp;&nbsp;
-![Github Followers](https://img.shields.io/github/followers/codebucks27.svg?style=social&label=Follow)&nbsp;&nbsp;<br />
+Personal portfolio that doubles as a browsable catalogue of AI agents with video demos,
+funnelling to a contact form for freelance and contract work.
 
-This repository contains starter code for Portfolio website created using NextJs. <br />
+## Stack
 
-For Demo and Final Code checkout following link👇: <br />
-[Nextjs Portfolio Website](https://devdreaming.com//videos/nextjs-tutorial-build-portfolio-tailwind-css-framer-motion#code-links) <br />
+- **Next.js 15** (App Router, JavaScript) + **Tailwind CSS v4** + **Framer Motion**
+- **Supabase**: Postgres, Auth (owner-only magic link), Storage
+- **Resend**: contact-form email notifications
+- **Vercel**: hosting (free tier) and the daily keep-alive cron
 
-If you want to learn how to create it please follow below tutorial👇: <br />
-https://youtu.be/Yw7yWHigGKI <br />
-[![YouTube Video Views](https://img.shields.io/youtube/views/Yw7yWHigGKI?style=social)](https://youtu.be/Yw7yWHigGKI)<br />
+## Local setup
 
----
-✨ Checkout my brand new Saas application -> [AI Headshot Generator](https://www.smartheadshots.ai)
+```bash
+npm install
+cp .env.example .env.local   # fill in the values
+npm run dev
+```
 
----
+Apply the SQL files in `supabase/migrations/` in order: paste each into the Supabase SQL Editor
+(Dashboard > SQL Editor > New query) and run it.
 
-### Images of The Portfolio Website:
+## Environment variables
 
-![Nextjs Portfolio Website](https://github.com/codebucks27/Next.js-Developer-Portfolio-Starter-Code/blob/main/website%20images/home-light-desktop.png)
-![Nextjs Portfolio Website Dark Mode](https://github.com/codebucks27/Next.js-Developer-Portfolio-Starter-Code/blob/main/website%20images/home-dark-desktop.png)
-![Next.js Portfolio Website](https://github.com/codebucks27/Next.js-Developer-Portfolio-Starter-Code/blob/main/website%20images/about-light-desktop.png)
-![Next js Portfolio Website](https://github.com/codebucks27/Next.js-Developer-Portfolio-Starter-Code/blob/main/website%20images/projects-dark-desktop.png)
-![Portfolio Website In Next.js](https://github.com/codebucks27/Next.js-Developer-Portfolio-Starter-Code/blob/main/website%20images/articles-light-desktop.png)
-![Responsive Portfolio Website In Nextjs](https://github.com/codebucks27/Next.js-Developer-Portfolio-Starter-Code/blob/main/website%20images/about-light-mobile.png)
-![Responsive Portfolio Website In Next js](https://github.com/codebucks27/Next.js-Developer-Portfolio-Starter-Code/blob/main/website%20images/projects-light-mobile.png)
-![Mobile Responsive Portfolio Website In Next.js](https://github.com/codebucks27/Next.js-Developer-Portfolio-Starter-Code/blob/main/website%20images/articles-light-mobile.png)
+See `.env.example`. Anything prefixed `NEXT_PUBLIC_` ships to the browser; everything else is
+server-only. `src/lib/supabase/admin.js` (service role) imports `server-only`, so the build fails
+if it is ever imported from client code.
 
+## Keep-alive job (do not delete)
 
-### Resources Used in This Project
+Supabase pauses free projects after a period of inactivity. `vercel.json` schedules a daily cron
+that calls `/api/keep-alive`, which writes a timestamp to the `heartbeat` table. The route
+rejects requests that lack `Authorization: Bearer $CRON_SECRET` (Vercel adds this header itself).
 
-- Profile image in the home page created by using https://www.midjourney.com/ tool.
-- Profile image in the about page by [Albert Dera](https://unsplash.com/@albertdera?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) 
-on [Unsplash](https://unsplash.com/photos/ILip77SbmOE?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText).
-- Fonts from https://fonts.google.com/ <br />
-- Icons from https://iconify.design/ <br />
-- LightBulb Svg from https://lukaszadam.com/illustrations <br />
+Check it is working: `GET /api/health` returns the last keep-alive time using the public anon key.
 
-### External Libraries used in this project:
+## Project layout
 
-- [framer-motion](https://www.framer.com/motion/) <br />
-- [Tailwind css](https://tailwindcss.com/) <br />
+```
+src/app/            routes (App Router)
+src/app/api/        route handlers (keep-alive, health)
+src/lib/supabase/   browser, server (cookie-aware) and service-role clients
+supabase/migrations SQL schema, applied manually in order
+```
 
+## Branches
 
+`main` is what Vercel deploys. Build features on `feat/*` branches and merge via pull request.
