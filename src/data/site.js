@@ -11,10 +11,10 @@ export const site = {
   },
 };
 
-// Blog joins the nav in Phase 4.
 export const nav = [
   { href: "/", label: "Home" },
   { href: "/projects", label: "Agents" },
+  { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
   { href: "/resume", label: "Resume" },
 ];

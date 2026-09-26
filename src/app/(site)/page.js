@@ -6,7 +6,14 @@ import { ArrowRightIcon } from "@/components/icons";
 import AgentCard from "@/components/catalogue/AgentCard";
 import { Availability } from "@/components/Headshot";
 import GeometricField from "@/components/GeometricField";
+import { pageMetadata } from "@/lib/seo";
 import Testimonials from "@/components/Testimonials";
+
+export const metadata = pageMetadata({
+  description:
+    "AI engineer building production-grade agentic systems: multi-agent orchestration, evaluation, guardrails and observability.",
+  path: "/",
+});
 
 // Featured agents come from the catalogue; refresh the cached page at most every 5 minutes.
 export const revalidate = 300;

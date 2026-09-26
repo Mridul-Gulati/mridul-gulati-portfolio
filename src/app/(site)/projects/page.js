@@ -1,11 +1,13 @@
 import { getPublishedAgents } from "@/lib/agents";
 import { ButtonLink, Container, PageHeader } from "@/components/ui";
 import Catalogue from "@/components/catalogue/Catalogue";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Agent catalogue",
   description: "Browse AI agents built for enterprise workflows, with short captioned demos.",
-};
+  path: "/projects",
+});
 
 // Statically cached and refreshed at most once a minute; per-visitor likes load client-side.
 export const revalidate = 60;

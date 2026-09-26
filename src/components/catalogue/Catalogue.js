@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { buttonClass } from "@/components/ui";
-import { getMyHearts, heartAgent, recordAgentView } from "@/app/projects/actions";
+import { getMyHearts, heartAgent, recordAgentView } from "@/app/(site)/projects/actions";
 import AgentCard from "./AgentCard";
 import HeartButton from "./HeartButton";
 import DemoModal from "./DemoModal";

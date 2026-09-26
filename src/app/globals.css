@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* Dark mode is class-based (next-themes toggles .dark on <html>). Screen-only, so printing
    and the generated resume PDF always use the light palette. */
@@ -22,6 +23,32 @@
 
 body {
   @apply bg-light text-dark dark:bg-dark dark:text-light;
+}
+
+/* Code syntax highlighting (highlight.js token classes from rehype-highlight).
+   GitHub-inspired palettes, tuned to sit on the site's light and dark surfaces. */
+.hljs { color: #24292f; }
+.hljs-comment, .hljs-quote { color: #6e7781; font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-literal, .hljs-type, .hljs-meta .hljs-keyword { color: #cf222e; }
+.hljs-string, .hljs-regexp, .hljs-meta .hljs-string { color: #0a3069; }
+.hljs-number, .hljs-symbol, .hljs-variable, .hljs-template-variable, .hljs-attr, .hljs-attribute { color: #0550ae; }
+.hljs-title, .hljs-title.function_, .hljs-section { color: #8250df; }
+.hljs-built_in, .hljs-title.class_, .hljs-params { color: #953800; }
+.hljs-name, .hljs-tag, .hljs-selector-class, .hljs-selector-id { color: #116329; }
+.hljs-addition { color: #116329; background: #dafbe1; }
+.hljs-deletion { color: #82071e; background: #ffebe9; }
+
+@media screen {
+  .dark .hljs { color: #e6edf3; }
+  .dark .hljs-comment, .dark .hljs-quote { color: #8b949e; }
+  .dark .hljs-keyword, .dark .hljs-selector-tag, .dark .hljs-literal, .dark .hljs-type, .dark .hljs-meta .hljs-keyword { color: #ff7b72; }
+  .dark .hljs-string, .dark .hljs-regexp, .dark .hljs-meta .hljs-string { color: #a5d6ff; }
+  .dark .hljs-number, .dark .hljs-symbol, .dark .hljs-variable, .dark .hljs-template-variable, .dark .hljs-attr, .dark .hljs-attribute { color: #79c0ff; }
+  .dark .hljs-title, .dark .hljs-title.function_, .dark .hljs-section { color: #d2a8ff; }
+  .dark .hljs-built_in, .dark .hljs-title.class_, .dark .hljs-params { color: #ffa657; }
+  .dark .hljs-name, .dark .hljs-tag, .dark .hljs-selector-class, .dark .hljs-selector-id { color: #7ee787; }
+  .dark .hljs-addition { color: #aff5b4; background: #033a16; }
+  .dark .hljs-deletion { color: #ffdcd7; background: #67060c; }
 }
 
 @page {

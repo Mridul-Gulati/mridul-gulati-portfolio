@@ -1,12 +1,14 @@
 import { highlights, resume } from "@/data/resume";
 import { ButtonLink, Card, Container, PageHeader, SectionHeader, Tag } from "@/components/ui";
 import { Portrait } from "@/components/Headshot";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "About",
   description:
     "AI technical lead building multi-agent systems with evaluation, guardrails and observability built in.",
-};
+  path: "/about",
+});
 
 const principles = [
   {

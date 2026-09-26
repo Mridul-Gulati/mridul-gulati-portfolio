@@ -1,11 +1,13 @@
 import { resume } from "@/data/resume";
 import { Container, buttonClass } from "@/components/ui";
 import { DownloadIcon } from "@/components/icons";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Resume",
   description: `${resume.name}, ${resume.title}. Experience, skills and certifications.`,
-};
+  path: "/resume",
+});
 
 // Generated from this page by `npm run resume:pdf`, so the PDF always matches the page.
 const PDF_PATH = "/Mridul_Gulati_Resume.pdf";

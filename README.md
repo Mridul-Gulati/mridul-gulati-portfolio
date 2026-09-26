@@ -60,6 +60,35 @@ Hearts are one per visitor per agent: the server issues a random httpOnly `vid` 
 only its salted hash, with a per-IP hourly cap. Opening a demo counts one view per session.
 `/projects?agent=<slug>` opens that agent's demo directly.
 
+## Admin console (`/admin`)
+
+Owner-only, two-step login:
+
+1. **Password** (email + password). A correct password does not create a session by itself; it
+   sets a signed 10-minute `adm_pw` cookie and emails a magic link.
+2. **Magic link.** `/auth/confirm` completes the login only if the same browser holds a valid
+   `adm_pw` cookie, then issues a signed 12-hour `adm_mfa` cookie (`ADMIN_SESSION_SECRET`).
+
+Every admin page and Server Action requires the owner's Supabase session **and** `adm_mfa`
+(`src/lib/auth.js`, checked again in `src/middleware.js`). Throttling lives in the
+`admin_login_attempts` table: 5 failed passwords per network per 15 minutes; magic links at most
+one per 60 seconds and 5 per hour. Change the password from **Admin → Account**.
+
+Supabase settings this relies on: new sign-ups disabled; Email provider enabled; Redirect URLs
+include `http://localhost:3000/auth/confirm` and `https://<site>/auth/confirm`.
+
+The console manages posts (markdown editor with live preview, code highlighting, image
+upload/paste/drop to the public `media` bucket, drafts and scheduled publishing), agents
+(create, edit, reorder, publish, YouTube link/id) and contact enquiries (mark handled).
+Saves revalidate the affected public pages immediately.
+
+## Blog and SEO
+
+`/blog` and `/blog/[slug]` are statically generated and refreshed on save. Posts get canonical
+URLs, Open Graph/Twitter tags, a generated share image (`opengraph-image.js`) and BlogPosting
+JSON-LD. `sitemap.xml`, `rss.xml` and `robots.txt` are generated from the database.
+Vercel Web Analytics is included; enable it in the Vercel dashboard.
+
 ## Project layout
 
 ```

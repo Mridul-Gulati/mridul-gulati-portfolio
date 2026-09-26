@@ -4,11 +4,13 @@ import { Container, PageHeader } from "@/components/ui";
 import { LinkedInIcon } from "@/components/icons";
 import { Avatar } from "@/components/Headshot";
 import ContactForm from "./ContactForm";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Contact",
   description: "Tell me about the agent you need built. I reply within one to two working days.",
-};
+  path: "/contact",
+});
 
 const expectations = [
   "A reply within one to two working days.",
