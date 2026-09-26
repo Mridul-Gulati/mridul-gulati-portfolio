@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getIpHash } from "@/lib/visitor";
 import { requirementTypes } from "@/data/site";
+import { sendEmail } from "@/lib/email";
 
 const RATE_LIMIT = { max: 3, windowMinutes: 60 };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -27,32 +28,23 @@ function validate(values) {
 }
 
 async function notifyOwner(values) {
-  const { RESEND_API_KEY, OWNER_EMAIL } = process.env;
-  if (!RESEND_API_KEY || !OWNER_EMAIL) {
-    console.warn("contact: RESEND_API_KEY or OWNER_EMAIL missing; skipping email");
+  if (!process.env.OWNER_EMAIL) {
+    console.warn("contact: OWNER_EMAIL missing; skipping email");
     return;
   }
-
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: process.env.RESEND_FROM_EMAIL || "Portfolio <onboarding@resend.dev>",
-      to: [OWNER_EMAIL],
-      reply_to: values.email,
-      subject: `New enquiry: ${values.requirement_type} from ${values.name}`,
-      text: [
-        `Name: ${values.name}`,
-        `Email: ${values.email}`,
-        `Company: ${values.company || "-"}`,
-        `Need: ${values.requirement_type}`,
-        "",
-        values.message,
-      ].join("\n"),
-    }),
+  await sendEmail({
+    to: process.env.OWNER_EMAIL,
+    replyTo: values.email,
+    subject: `New enquiry: ${values.requirement_type} from ${values.name}`,
+    text: [
+      `Name: ${values.name}`,
+      `Email: ${values.email}`,
+      `Company: ${values.company || "-"}`,
+      `Need: ${values.requirement_type}`,
+      "",
+      values.message,
+    ].join("\n"),
   });
-
-  if (!res.ok) console.error("contact: Resend failed", res.status, await res.text());
 }
 
 export async function submitContact(_prevState, formData) {
@@ -103,11 +95,7 @@ export async function submitContact(_prevState, formData) {
   }
 
   // The DB row is the source of truth; an email failure is logged but doesn't fail the submission.
-  try {
-    await notifyOwner(values);
-  } catch (err) {
-    console.error("contact: email error", err);
-  }
+  await notifyOwner(values);
 
   return { status: "success" };
 }

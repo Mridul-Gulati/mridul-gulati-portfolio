@@ -4,6 +4,8 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { sendEmail } from "@/lib/email";
 import { isOwnerEmail } from "@/lib/auth";
 import { getIpHash } from "@/lib/visitor";
 import { siteUrl } from "@/lib/site-url";
@@ -27,6 +29,10 @@ async function passwordIsCorrect(email, password) {
   return true;
 }
 
+// Generates a one-time login token server-side and emails the link via Resend.
+// Deliberately not signInWithOtp: that relies on a PKCE verifier cookie written during this
+// request and on Supabase's rate-limited mailer, which broke the link in production.
+// The token alone can't sign anyone in: /auth/confirm also requires this browser's adm_pw cookie.
 async function sendLink(email) {
   const seconds = await linkWait();
   if (seconds === Infinity) return { status: "error", message: UNAVAILABLE };
@@ -34,15 +40,26 @@ async function sendLink(email) {
     return { status: "sent", at: Date.now(), retryAfter: seconds, message: `A link was sent recently. You can request another in ${wait(seconds)}.` };
   }
 
-  const origin = (await headers()).get("origin") || siteUrl;
-  const supabase = await createClient(); // cookie-aware: stores the PKCE verifier for step 2
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: { shouldCreateUser: false, emailRedirectTo: `${origin}/auth/confirm?next=/admin` },
-  });
-  if (error) {
-    console.error("auth: signInWithOtp failed", error.message);
-    return { status: "sent", at: Date.now(), retryAfter: LIMITS.linkCooldownSeconds, message: "Couldn't send the email right now. Try again shortly." };
+  const failed = { status: "sent", at: Date.now(), retryAfter: LIMITS.linkCooldownSeconds, message: "Couldn't send the email right now. Try again shortly." };
+  try {
+    const { data, error } = await createAdminClient().auth.admin.generateLink({ type: "magiclink", email });
+    if (error) {
+      console.error("auth: generateLink failed", error.message);
+      return failed;
+    }
+
+    const origin = (await headers()).get("origin") || siteUrl;
+    const link = `${origin}/auth/confirm?token_hash=${encodeURIComponent(data.properties.hashed_token)}&type=magiclink`;
+    const sent = await sendEmail({
+      to: email,
+      subject: "Your admin login link",
+      text: `Click to finish signing in to your site's admin:\n\n${link}\n\nIt only works in the browser where you entered your password, within 10 minutes.\nIf you didn't try to sign in, change your password.`,
+      html: `<p>Click to finish signing in to your site's admin:</p><p><a href="${link}">Sign in to admin</a></p><p style="color:#666">It only works in the browser where you entered your password, within 10 minutes.<br>If you didn't try to sign in, change your password.</p>`,
+    });
+    if (!sent) return failed;
+  } catch (err) {
+    console.error("auth: sendLink error", err);
+    return failed;
   }
 
   await record("link_sent", await getIpHash());
@@ -51,7 +68,17 @@ async function sendLink(email) {
 
 // Step 1: email + password. On success, set the short-lived "password verified" cookie and
 // email the magic link (step 2).
+// Never throws: an unexpected error shows a message instead of crashing the page.
 export async function loginWithPassword(_prev, formData) {
+  try {
+    return await passwordStep(formData);
+  } catch (err) {
+    console.error("auth: password step error", err);
+    return { status: "error", message: UNAVAILABLE };
+  }
+}
+
+async function passwordStep(formData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const ipHash = await getIpHash();
@@ -73,9 +100,14 @@ export async function loginWithPassword(_prev, formData) {
 
 // Resend the magic link. Only works within 10 minutes of a correct password in this browser.
 export async function resendLink() {
-  const pw = await verifyToken((await cookies()).get(PW_COOKIE)?.value, "pw");
-  if (!pw) return { status: "error", message: "Your session expired. Enter your password again." };
-  return sendLink(pw.e);
+  try {
+    const pw = await verifyToken((await cookies()).get(PW_COOKIE)?.value, "pw");
+    if (!pw) return { status: "error", message: "Your session expired. Enter your password again." };
+    return await sendLink(pw.e);
+  } catch (err) {
+    console.error("auth: resend error", err);
+    return { status: "error", message: UNAVAILABLE };
+  }
 }
 
 export async function signOut() {
